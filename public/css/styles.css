@@ -12,14 +12,5 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.btn-index {
-    background-color: #6c757d; 
-    border-color: #6c757d;
-    color: #ffffff;
-}
 
-.btn-index:hover {
-    background-color: #495057; 
-    border-color: #495057;
-}
 
