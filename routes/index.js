@@ -96,13 +96,13 @@ router.get('/products', (req, res) => {
     res.render('products', { title: 'Productos', product: fileNames[0], totalStock });
 });
 
-  
-  router.get('/products', (req, res) => res.render('products', { title: 'Productos', product: fileNames[0] }));
-  
+
+router.get('/products', (req, res) => res.render('products', { title: 'Productos', product: fileNames[0] }));
+
 
 router.get('/', (req, res) => res.render('index', { title: 'Inicio' }))
 
-router.get('/sales', (req, res) => {res.render('sales', { title: 'Facturacion', sale: fileNames[1], product: fileNames[0], supplier: fileNames[2], getProductById, getSupplierById, getTypeofSale })})
+router.get('/sales', (req, res) => { res.render('sales', { title: 'Facturacion', sale: fileNames[1], product: fileNames[0], supplier: fileNames[2], getProductById, getSupplierById, getTypeofSale }) })
 router.get('/suppliers', (req, res) => res.render('suppliers', { title: 'Proveedores', supplier: fileNames[2] }))
 
 
@@ -196,7 +196,7 @@ router.post('/sales', (req, res) => {
             productId: productId,
             supplierId: supplierId,
             quantity: quantity,
-            price: (Number(price)*Number(quantity)).toString(),
+            price: (Number(price) * Number(quantity)).toString(),
             type: typeSale,
             timestamp: timestamp
         });
@@ -223,14 +223,14 @@ router.post('/sales', (req, res) => {
 
 router.get('/descargar-pdf', async (req, res) => {
     try {
-       
+
         const puppeteer = require('puppeteer');
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
-        await page.goto('http://localhost:3000/sales'); 
+        await page.goto('http://localhost:3000/counts');
         const pdfBuffer = await page.pdf({ format: 'A4' });
         await browser.close();
-        
+
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', 'attachment; filename=historial_ventas.pdf');
         res.status(200).send(pdfBuffer);
@@ -242,24 +242,29 @@ router.get('/descargar-pdf', async (req, res) => {
 
 router.get('/descargar-excel', (req, res) => {
     try {
-       
         const ExcelJS = require('exceljs');
         const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('Historial Ventas');
-        worksheet.addRow(['Producto', 'Cantidad', 'Precio', 'Fecha']);
+        const worksheet = workbook.addWorksheet('Historial Transacciones');
+        worksheet.addRow(['Tipo', 'Producto', 'Cantidad', 'Precio', 'Fecha']);
 
-        const ventas = [
-            { producto: 'Producto 1', cantidad: 5, precio: 100, fecha: '2023-11-26' },
-            { producto: 'Producto 2', cantidad: 8, precio: 75, fecha: '2023-11-25' },
-           
-        ];
+        // Obtener datos de ventas y compras
+        const transacciones = Array.from(fileNames[1].values()).map(transaction => {
+            const tipo = transaction.type === 'purchase' ? 'Compra' : 'Venta';
+            const producto = getProductById(transaction.productId).name;
+            const cantidad = transaction.quantity;
+            const precio = transaction.price;
+            const fecha = transaction.timestamp;
 
-        ventas.forEach(venta => {
-            worksheet.addRow([venta.producto, venta.cantidad, venta.precio, venta.fecha]);
+            return { tipo, producto, cantidad, precio, fecha };
+        });
+
+        // Agregar filas al archivo Excel
+        transacciones.forEach(transaccion => {
+            worksheet.addRow([transaccion.tipo, transaccion.producto, transaccion.cantidad, transaccion.precio, transaccion.fecha]);
         });
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', 'attachment; filename=historial_ventas.xlsx');
+        res.setHeader('Content-Disposition', 'attachment; filename=historial_transacciones.xlsx');
         workbook.xlsx.write(res).then(() => res.status(200).end());
     } catch (error) {
         console.error('Error al generar el archivo Excel:', error);
@@ -269,19 +274,18 @@ router.get('/descargar-excel', (req, res) => {
 
 router.get('/generar-informe-word', (req, res) => {
     try {
-       
+
         const Docxtemplater = require('docxtemplater');
-        const fs = require('fs');
-        const path = require('path');
 
         const templateContent = fs.readFileSync(path.resolve(__dirname, 'plantilla.docx'), 'binary');
+
         const template = new Docxtemplater();
         template.loadZip(templateContent);
-        
+
         const historial = [
             { tipo: 'Compra', detalle: 'Producto 1 - 10 unidades', fecha: '2023-11-26' },
             { tipo: 'Venta', detalle: 'Producto 2 - 5 unidades', fecha: '2023-11-25' },
-       
+
         ];
 
         template.setData({
@@ -300,7 +304,5 @@ router.get('/generar-informe-word', (req, res) => {
         res.status(500).send('Error al generar el informe en Word');
     }
 });
-
-
 
 module.exports = router;
