@@ -74,13 +74,48 @@ const getSupplierById = (supplierId) => {
 const getTypeofSale = (typeSale) => {
     return Array.from(fileNames[1].values()).find(sale => sale.type === typeSale)
 }
+router.get('/products', (req, res) => {
+    const totalStock = Array.from(fileNames[0].values()).reduce((acc, product) => acc + parseInt(product.stock), 0);
+    res.render('products', { title: 'Productos', product: fileNames[0], totalStock });
+});
 
+  
+  router.get('/products', (req, res) => res.render('products', { title: 'Productos', product: fileNames[0] }));
+  
 
 router.get('/', (req, res) => res.render('index', { title: 'Inicio' }))
-router.get('/products', (req, res) => res.render('products', { title: 'Productos', product: fileNames[0] }))
+
 router.get('/sales', (req, res) => {res.render('sales', { title: 'Facturacion', sale: fileNames[1], product: fileNames[0], supplier: fileNames[2], getProductById, getSupplierById, getTypeofSale })})
 router.get('/suppliers', (req, res) => res.render('suppliers', { title: 'Proveedores', supplier: fileNames[2] }))
-router.get('/counts', (req, res) => res.render('count', { title: 'Cuentas', count: fileNames[3] }))
+
+
+router.get('/counts', (req, res) => {
+    const totalProducts = fileNames[0].size;
+    const totalSuppliers = fileNames[2].size;
+    const totalPurchases = getTotalPurchases();
+    const totalSales = getTotalSales();
+
+    res.render('count', { title: 'Cuentas', totalProducts, totalSuppliers, totalSales, totalPurchases });
+
+});
+
+const getTotalPurchases = () => {
+    const purchases = Array.from(fileNames[1].values()).filter(sale => sale.type === 'purchase');
+    return calculateTotalAmount(purchases);
+};
+
+const calculateTotalAmount = (transactions) => {
+    return transactions.reduce((total, transaction) => {
+        return total + Number(transaction.price);
+    }, 0);
+};
+const getTotalSales = () => {
+    const sales = Array.from(fileNames[1].values()).filter(sale => sale.type === 'sale');
+    return calculateTotalAmount(sales);
+};
+const totalSales = getTotalSales(); // Obtén el total de ventas
+
+
 
 router.post('/products', (req, res) => {
     const { id, name, price, stock } = req.body;
@@ -181,6 +216,7 @@ router.post('/sales', (req, res) => {
     update(1, fileNames[1]);
     res.status(200).send('Operación registrada con éxito');
 });
+
 
 
 

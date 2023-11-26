@@ -5,7 +5,118 @@
 </head>
 <body>
     <%-include('templates/navbar') %>
-
+    <div class="grey-bg container-fluid">
+       
+        
+        <section id="stats-subtitle">
+        <div class="row">
+          <div class="col-12 mt-3 mb-1">
+            <h4 class="text-uppercase">Maneja Contabilidad</h4>
+            <p>Ve tus ventas y compras y administra tus ganancias.</p>
+          </div>
+        </div>
+      
+        <div class="row">
+          <div class="col-xl-6 col-md-12">
+            <div class="card overflow-hidden">
+              <div class="card-content">
+                <div class="card-body cleartfix">
+                  <div class="media align-items-stretch">
+                    <div class="align-self-center">
+                      <i class="icon-graph success primary font-large-2 mr-2"></i>
+                    </div>
+                    <div class="media-body">
+                        <h4>Total Productos</h4>
+                        <span>"No tiene en cuenta la cantidad de cada productos "</span>
+                      </div>
+                      <div class="align-self-center">
+                        <h1><%= totalProducts %></h1>
+                      </div>
+                      
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      
+          <div class="col-xl-6 col-md-12">
+            <div class="card">
+              <div class="card-content">
+                <div class="card-body cleartfix">
+                  <div class="media align-items-stretch">
+                    <div class="align-self-center">
+                      <i class="icon-speech warning font-large-2 mr-2"></i>
+                    </div>
+                    <div class="media-body">
+                      <h4>Total Proveedores</h4>
+                      <span>Total de provvedores que estan en tu tienda </span>
+                    </div>
+                    <div class="align-self-center">
+                        <h1><%= totalSuppliers %></h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div class="row">
+          <div class="col-xl-6 col-md-12">
+            <div class="card">
+              <div class="card-content">
+                <div class="card-body cleartfix">
+                  <div class="media align-items-stretch">
+                    <div class="align-self-center">
+                        <h1><%= totalSales %></h1>
+                    </div>
+                    <div class="media-body">
+                      <h4>Total Ventas</h4>
+                      <span>Monthly Sales Amount</span>
+                    </div>
+                    <div class="align-self-center">
+                      <i class="icon-heart danger font-large-2"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      
+          <div class="col-xl-6 col-md-12">
+            <div class="card">
+              <div class="card-content">
+                <div class="card-body cleartfix">
+                  <div class="media align-items-stretch">
+                    <div class="align-self-center">
+                      <h1 class="mr-2">$   <%= totalPurchases %></h1>
+                    </div>
+                    <div class="media-body">
+                      <h4>ㅤㅤㅤTotal Compras</h4>
+                      <span>ㅤㅤㅤㅤㅤVeras todas las compras que has realizado</span>
+                    </div>
+                    <div class="align-self-center">
+                      <i class="icon-wallet success font-large-2"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6 col-md-12">
+            <div class="card">
+              <div class="card-content">
+                <div class="card-body cleartfix">
+                  <div class="media align-items-stretch">
+                   
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      </div>
     <%-include('templates/scripts') %>
 </body>
 </html>
