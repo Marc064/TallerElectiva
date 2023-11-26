@@ -1,10 +1,10 @@
 function saveProduct() {
-    const id = document.getElementById('idProduct').value;
-    const name = document.getElementById('nameProduct').value;
-    const price = document.getElementById('priceProduct').value;
-    const stock = document.getElementById('stockProduct').value;
+    const id = document.getElementById('idProduct').value
+    const name = document.getElementById('nameProduct').value
+    const price = document.getElementById('priceProduct').value
+    const stock = '0'
 
-    if (id !== "" && name !== "" && price !== "" && stock !== "") {
+    if (id !== "" && name !== "" && price !== "") {
 
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "/products", true);
