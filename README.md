@@ -1,7 +1,7 @@
 # TallerElectiva
 Taller de Electiva II usando express
-# Integrantes
-Dilan Ferney Galeano Hoyos
+# Desarrolladores
+Dilan Ferney Galeano Hoyos y
 Marco Antonio Vargas Garcia
 
 
