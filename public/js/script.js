@@ -50,3 +50,38 @@ function saveSupplier() {
         alert('Se deben diligenciar todos los campos');
     }
 }
+
+// En script.js
+function loadOptions(endpoint, selectId, defaultOption) {
+    const select = document.getElementById(selectId);
+    select.innerHTML = `<option value="value1">${defaultOption}</option>`;
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', endpoint, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                const data = JSON.parse(xhr.responseText);
+
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.text = item.name;
+                    select.appendChild(option);
+                });
+            } else {
+                console.error(`Error al cargar opciones desde ${endpoint}. Estado: ${xhr.status}`);
+            }
+        }
+    };
+    xhr.send();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Carga los productos y proveedores
+    loadOptions('/products', 'selectProduto', 'Seleccione un Producto');
+    loadOptions('/products', 'selectProducto1', 'Seleccione un Producto');
+    loadOptions('/suppliers', 'selectProveedor', 'Seleccione un Proveedor');
+});
+
+// ... Resto de tu código

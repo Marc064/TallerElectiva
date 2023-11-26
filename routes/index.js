@@ -63,6 +63,7 @@ const update = (fileIndex, fileMap) => {
 
 
 
+
 router.get('/', (req, res) => res.render('index', { title: 'Inicio' }))
 router.get('/products', (req, res) => res.render('products', { title: 'Productos', product: fileNames[0] }))
 router.get('/sales', (req, res) => res.render('sales', { title: 'Facturacion', sale: fileNames[1] }))
@@ -130,6 +131,10 @@ router.post('/suppliers', (req, res) => {
         }
     }
 })
+
+
+
+
 
 
 
