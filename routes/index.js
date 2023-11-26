@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const fs = require("fs");
+const moment = require('moment')
+
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
@@ -28,7 +30,7 @@ for (let i = 0; i < filePaths.length; i++) {
 
     try {
         const data = fs.readFileSync(filePath, 'utf8');
-        
+
         if (data.trim() !== '') {
             const jsonData = JSON.parse(data);
             fileNames[i] = new Map(Object.entries(jsonData));
@@ -40,7 +42,7 @@ for (let i = 0; i < filePaths.length; i++) {
     } catch (parseError) {
         console.error(`Error al parsear el archivo JSON ${filePath}:`, parseError);
     }
-    
+
 }
 
 const exists = (id, fileMap) => Array.from(fileMap.values()).some(obj => obj.id === id)
@@ -60,13 +62,19 @@ const update = (fileIndex, fileMap) => {
     }
 }
 
+const getProductById = (productId) => {
+    return Array.from(fileNames[0].values()).find(product => product.id === productId)
+};
 
+const getSupplierById = (supplierId) => {
+    return Array.from(fileNames[2].values()).find(supplier => supplier.id === supplierId)
+};
 
 
 
 router.get('/', (req, res) => res.render('index', { title: 'Inicio' }))
 router.get('/products', (req, res) => res.render('products', { title: 'Productos', product: fileNames[0] }))
-router.get('/sales', (req, res) => res.render('sales', { title: 'Facturacion', sale: fileNames[1] }))
+router.get('/sales', (req, res) => {res.render('sales', { title: 'Facturacion', sale: fileNames[1], product: fileNames[0], supplier: fileNames[2], getProductById, getSupplierById })})
 router.get('/suppliers', (req, res) => res.render('suppliers', { title: 'Proveedores', supplier: fileNames[2] }))
 router.get('/counts', (req, res) => res.render('count', { title: 'Cuentas', count: fileNames[3] }))
 
@@ -80,7 +88,7 @@ router.post('/products', (req, res) => {
             price: price,
             stock: stock
         });
-        
+
         if (filePaths[0]) {
             update(0, fileNames[0]);
         } else {
@@ -111,7 +119,7 @@ router.post('/suppliers', (req, res) => {
             number: number,
             email: email
         });
-        
+
         if (filePaths[2]) {
             update(2, fileNames[2]);
         } else {

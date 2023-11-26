@@ -52,45 +52,14 @@ function saveSupplier() {
 }
 
 
-function loadOptions(endpoint, selectId, defaultOption) {
-    const select = document.getElementById(selectId);
-    select.innerHTML = `<option value="value1">${defaultOption}</option>`;
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', endpoint, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200) {
-                const data = JSON.parse(xhr.responseText);
-
-                data.forEach(item => {
-                    const option = document.createElement('option');
-                    option.value = item.id;
-                    option.text = item.name;
-                    select.appendChild(option);
-                });
-            } else {
-                console.error(`Error al cargar opciones desde ${endpoint}. Estado: ${xhr.status}`);
-            }
-        }
-    };
-    xhr.send();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadOptions('/products', 'selectProduto', 'Seleccione un Producto');
-    loadOptions('/products', 'selectProducto1', 'Seleccione un Producto');
-    loadOptions('/suppliers', 'selectProveedor', 'Seleccione un Proveedor');
-});
-
 
 function savePurchase() {
-    const productId = document.getElementById('selectProduto').value;
-    const supplierId = document.getElementById('selectProveedor').value;
-    const quantity = document.getElementById('Cantidad').value;
-    const price = document.getElementById('Valor').value;
+    const productId = document.getElementById('selectProducto').value
+    const supplierId = document.getElementById('selectProveedor').value
+    const quantity = document.getElementById('Cantidad').value
+    const price = document.getElementById('Valor').value
 
-    if (productId !== "" && supplierId !== "" && quantity !== "" && price !== "") {
+    if (productId !== "Seleccione un producto" && supplierId !== "Seleccione un proveedor" && quantity !== "" && price !== "") {
 
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "/sales", true);
