@@ -73,7 +73,24 @@ const getSupplierById = (supplierId) => {
 
 const getTypeofSale = (typeSale) => {
     return Array.from(fileNames[1].values()).find(sale => sale.type === typeSale)
+
 }
+
+const getTotalPurchases = () => {
+    const purchases = Array.from(fileNames[1].values()).filter(sale => sale.type === 'purchase');
+    return calculateTotalAmount(purchases);
+};
+
+const calculateTotalAmount = (transactions) => {
+    return transactions.reduce((total, transaction) => {
+        return total + Number(transaction.price);
+    }, 0);
+};
+const getTotalSales = () => {
+    const sales = Array.from(fileNames[1].values()).filter(sale => sale.type === 'sale');
+    return calculateTotalAmount(sales);
+};
+
 router.get('/products', (req, res) => {
     const totalStock = Array.from(fileNames[0].values()).reduce((acc, product) => acc + parseInt(product.stock), 0);
     res.render('products', { title: 'Productos', product: fileNames[0], totalStock });
@@ -99,21 +116,7 @@ router.get('/counts', (req, res) => {
 
 });
 
-const getTotalPurchases = () => {
-    const purchases = Array.from(fileNames[1].values()).filter(sale => sale.type === 'purchase');
-    return calculateTotalAmount(purchases);
-};
 
-const calculateTotalAmount = (transactions) => {
-    return transactions.reduce((total, transaction) => {
-        return total + Number(transaction.price);
-    }, 0);
-};
-const getTotalSales = () => {
-    const sales = Array.from(fileNames[1].values()).filter(sale => sale.type === 'sale');
-    return calculateTotalAmount(sales);
-};
-const totalSales = getTotalSales(); // Obtén el total de ventas
 
 
 
@@ -217,14 +220,6 @@ router.post('/sales', (req, res) => {
     update(1, fileNames[1]);
     res.status(200).send('Operación registrada con éxito');
 });
-
-
-
-
-
-
-
-
 
 
 
