@@ -83,27 +83,32 @@ function savePurchase() {
 }
 
 function saveSale() {
-    const productId = document.getElementById('productoSale').value
-    const quantity = document.getElementById('CantidadSale').value
-    const typeSale = 'sale'
+    const selectedOption = document.getElementById('productoSale').value;
+    const quantity = document.getElementById('CantidadSale').value;
+    const typeSale = 'sale';
+    const [productId, productStock] = selectedOption.split(':')
+    const selectedProduct = document.getElementById
+
     if (productId !== "Seleccione un producto" && quantity !== "") {
-
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/sales", true);
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-               
-                console.log('Venta registrada con éxito');
-               
-                $('#registrarCompraModal').modal('hide');
+        if (selectedProduct && Number(quantity) <= Number(productStock)) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/sales", true);
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log('Venta registrada con éxito');
+                    $('#registrarCompraModal').modal('hide');
+                    
+                }
             }
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            const data = `productId=${encodeURIComponent(productId)}&supplierId=${encodeURIComponent("")}&quantity=${encodeURIComponent(quantity)}&price=${encodeURIComponent("")}&typeSale=${encodeURIComponent(typeSale)}`;
+
+            xhr.send(data);
+            window.location.reload();
+        } else {
+            alert('La cantidad ingresada supera la cantidad disponible en el inventario.');
         }
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-        const data = `productId=${encodeURIComponent(productId)}&supplierId=${encodeURIComponent("")}&quantity=${encodeURIComponent(quantity)}&price=${encodeURIComponent("")}&typeSale=${encodeURIComponent(typeSale)}`;
-
-        xhr.send(data);
-        window.location.reload();
     } else {
         alert('Se deben diligenciar todos los campos');
     }

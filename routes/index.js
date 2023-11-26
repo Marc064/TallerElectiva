@@ -158,7 +158,7 @@ router.post('/sales', (req, res) => {
             productId: productId,
             supplierId: supplierId,
             quantity: quantity,
-            price: price,
+            price: (Number(price)*Number(quantity)).toString(),
             type: typeSale,
             timestamp: timestamp
         });
@@ -169,6 +169,7 @@ router.post('/sales', (req, res) => {
             id: newSaleId,
             productId: productId,
             quantity: quantity,
+            price: (Number(existingProduct.price) * Number(quantity)).toString(),
             type: typeSale,
             timestamp: timestamp
         });

@@ -68,8 +68,8 @@
                                     <option selected>Seleccione un producto</option>
 
                                     <% for (const [k, v] of product) { if (product.size> 0) { %>
-                                        <option value="<%= v.id %>">
-                                            <%= v.name %>
+                                        <option value="<%= `${v.id}:${v.stock}` %>">
+                                            Nombre: <%= v.name %>, Stock: <%= v.stock %>
                                         </option>
                                         <% } } %>
                                 </select>
@@ -107,6 +107,7 @@
                                         <th>Fecha</th>
                                         <th>Producto</th>
                                         <th>Cantidad</th>
+                                        <th>Total</th>
                                         <th>ImprimirFactura</th>
                                     </tr>
                                 </thead>
@@ -120,6 +121,7 @@
                                                         <th><%= v.timestamp %></th>
                                                         <th><%= getProductById(v.productId).name %></th>
                                                         <th><%= v.quantity %></th>
+                                                        <th><%= v.price %></th>
                                                         <th><button type="button" class="btn btn-warning">Imprimir</button></th>
                                                     </tr>
                                         <% }}} else {%>
