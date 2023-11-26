@@ -43,6 +43,9 @@ for (let i = 0; i < filePaths.length; i++) {
     
 }
 
+const exists = (id, fileMap) => Array.from(fileMap.values()).some(obj => obj.id === id)
+
+
 const update = (fileIndex, fileMap) => {
     try {
         const jsonData = JSON.stringify(Array.from(fileMap.values()));
@@ -71,7 +74,7 @@ router.get('/suppliers', (req, res) => res.render('suppliers', { title: 'Proveed
 router.post('/products', (req, res) => {
     const { id, name, price, stock } = req.body;
 
-    if (!existsProduct(id)) {
+    if (!exists(id, fileNames[0])) {
         const newProductId = fileNames[0].size + 1;
         fileNames[0].set(newProductId, {
             id: id,
