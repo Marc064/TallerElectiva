@@ -5,7 +5,129 @@
 </head>
 <body>
     <%-include('templates/navbar') %>
+    <div class="container-fluid mt-5 container-main">
+        <div class="d-flex align-items-center vh-90">
+            <div class="d-flex justify-content-center w-100">
+                <div class="card text-center" style="width: 18rem;">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgYYZPsjBc58w3b79w0V2nCjKqqrE6TfsrFg&usqp=CAU" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Proveedores</h5>
+                                <p class="card-text">Revisa que materia prima te llega.</p>
+                        <div class="d-flex justify-content-center">
+                            <button class="btn btn-warning" data-toggle="modal"
+                                data-target="#registrarProveedorModal">
+                                <span class="oi oi-dollar"></span> Registrar o Actualizar Proveedor
+                            </button>
+                            <p class="card-text">ㅤㅤㅤㅤ</p>
+                            <button class="btn btn-success" data-toggle="modal" data-target="#verProveedoresModal">
+                                <span class="oi oi-cart"></span> Ver Proveedores
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="registrarProveedorModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar o Actualizar Producto</h5>
+                    <button type="button" class="btn btn-danger" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--
+                    Cambiar
+                -->
+                    <form>
+                        <div class="form-group">
+                            <label for="idSupplier">Id</label>
+                            <input type="text" class="form-control" id="idSupplier"
+                                placeholder="Ingrese el Id">
+                            <label for="nameSupplier">Nombre</label>
+                            <input type="text" class="form-control" id="nameSupplier"
+                                placeholder="Ingrese el Nombre">
+                            <label for="numberSupplier">Contacto</label>
+                            <input type="number" class="form-control" id="numberProduct"
+                                placeholder="Ingrese el Numero de Contacto">
+                            <label for="emailSupplier">Correo</label>
+                            <input type="email" class="form-control" id="emailSupplier"
+                                placeholder="Ingrese el Correo">
+                        </div>
+                    </form>
+                    <!--
+                    Cabiar
+                -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="saveProduct" onclick="saveSupplier()">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="modal" tabindex="-1" role="dialog" id="verProveedoresModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ver Proveedores</h5>
+                    <button type="button" class="btn btn-danger" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--
+                    Cambiar
+                -->
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID Proveedor</th>
+                                    <th>Proveedor</th>
+                                    <th>Contacto</th>
+                                    <th>Correo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                    <% if (supplier.size> 0){
+                                        for (const [k, v] of supplier){ %>
+                                        <tr>
+                                            <td><%= v.id %></td>
+                                            <td><%= v.name %></td>
+                                            <td><%= v.number %></td>
+                                            <td><%= v.email %></td>
+                                        </tr>
+                                        <% } } else{ %>
+                                <tr>
+                                    <td colspan="5">
+                                        <h3>No hay Proveedores Registrados</h3>
+                                    </td>
+                                </tr>
+                                <% } %>
+                                    </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--
+                    Cabiar
+                -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <%-include('templates/scripts') %>
 </body>
 </html>
