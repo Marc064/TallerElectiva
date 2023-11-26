@@ -212,13 +212,93 @@ router.post('/sales', (req, res) => {
             timestamp: timestamp
         });
     } else {
-        // Tipo de venta no reconocido o campos faltantes
+
         return res.status(400).send('Error: Tipo de venta no reconocido o campos faltantes');
     }
 
     update(0, fileNames[0]);
     update(1, fileNames[1]);
     res.status(200).send('Operación registrada con éxito');
+});
+
+router.get('/descargar-pdf', async (req, res) => {
+    try {
+       
+        const puppeteer = require('puppeteer');
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.goto('http://localhost:3000/sales'); 
+        const pdfBuffer = await page.pdf({ format: 'A4' });
+        await browser.close();
+        
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename=historial_ventas.pdf');
+        res.status(200).send(pdfBuffer);
+    } catch (error) {
+        console.error('Error al generar el PDF:', error);
+        res.status(500).send('Error al generar el PDF');
+    }
+});
+
+router.get('/descargar-excel', (req, res) => {
+    try {
+       
+        const ExcelJS = require('exceljs');
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Historial Ventas');
+        worksheet.addRow(['Producto', 'Cantidad', 'Precio', 'Fecha']);
+
+        const ventas = [
+            { producto: 'Producto 1', cantidad: 5, precio: 100, fecha: '2023-11-26' },
+            { producto: 'Producto 2', cantidad: 8, precio: 75, fecha: '2023-11-25' },
+           
+        ];
+
+        ventas.forEach(venta => {
+            worksheet.addRow([venta.producto, venta.cantidad, venta.precio, venta.fecha]);
+        });
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=historial_ventas.xlsx');
+        workbook.xlsx.write(res).then(() => res.status(200).end());
+    } catch (error) {
+        console.error('Error al generar el archivo Excel:', error);
+        res.status(500).send('Error al generar el archivo Excel');
+    }
+});
+
+router.get('/generar-informe-word', (req, res) => {
+    try {
+       
+        const Docxtemplater = require('docxtemplater');
+        const fs = require('fs');
+        const path = require('path');
+
+        const templateContent = fs.readFileSync(path.resolve(__dirname, 'plantilla.docx'), 'binary');
+        const template = new Docxtemplater();
+        template.loadZip(templateContent);
+        
+        const historial = [
+            { tipo: 'Compra', detalle: 'Producto 1 - 10 unidades', fecha: '2023-11-26' },
+            { tipo: 'Venta', detalle: 'Producto 2 - 5 unidades', fecha: '2023-11-25' },
+       
+        ];
+
+        template.setData({
+            fecha: '26 de noviembre de 2023',
+            historial: historial,
+        });
+
+        template.render();
+        const outputBuffer = template.getZip().generate({ type: 'nodebuffer' });
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        res.setHeader('Content-Disposition', 'attachment; filename=informe_ventas.docx');
+        res.status(200).send(outputBuffer);
+    } catch (error) {
+        console.error('Error al generar el informe en Word:', error);
+        res.status(500).send('Error al generar el informe en Word');
+    }
 });
 
 

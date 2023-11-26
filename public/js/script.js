@@ -117,3 +117,47 @@ function saveSale() {
         alert('Se deben diligenciar todos los campos');
     }
 }
+async function descargarPDF() {
+    try {
+        const response = await fetch('/descargar-pdf');
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'historial_ventas.pdf';
+        link.click();
+    } catch (error) {
+        console.error('Error al descargar PDF:', error);
+    }
+}
+
+async function descargarExcel() {
+    try {
+        const response = await fetch('/descargar-excel');
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'historial_ventas.xlsx';
+        link.click();
+    } catch (error) {
+        console.error('Error al descargar Excel:', error);
+    }
+}
+
+async function generarInformeWord() {
+    try {
+        const response = await fetch('/generar-informe-word');
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'informe_ventas.docx';
+        link.click();
+    } catch (error) {
+        console.error('Error al generar informe en Word:', error);
+    }
+}
+
+function imprimirInforme() {
+  
+    window.print();
+}
+
