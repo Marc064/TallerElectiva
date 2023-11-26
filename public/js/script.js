@@ -54,13 +54,14 @@ function saveSupplier() {
 
 
 function savePurchase() {
-    const productId = document.getElementById('selectProducto').value
+    const selectedOption = document.getElementById('selectProducto').value
     const supplierId = document.getElementById('selectProveedor').value
     const quantity = document.getElementById('Cantidad').value
     const price = document.getElementById('Valor').value
     const typeSale = 'purchase'
+    const [productId, productStock] = selectedOption.split(':')
     if (productId !== "Seleccione un producto" && supplierId !== "Seleccione un proveedor" && quantity !== "" && price !== "") {
-
+        if(Number(productStock)+Number(quantity) <=100){
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "/sales", true);
         xhr.onreadystatechange = () => {
@@ -77,6 +78,9 @@ function savePurchase() {
 
         xhr.send(data);
         window.location.reload();
+    }else{
+        alert("No se puede superar el limite del invetario de maximo 100 por producto")
+    }
     } else {
         alert('Se deben diligenciar todos los campos');
     }

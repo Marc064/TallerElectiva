@@ -163,8 +163,8 @@
                                     <option selected>Seleccione un producto</option>
 
                                     <% for (const [k, v] of product) { if (product.size> 0) { %>
-                                        <option value="<%= v.id %>">
-                                            <%= v.name %>
+                                        <option value="<%= `${v.id}:${v.stock}` %>">
+                                            Nombre: <%= v.name %>, Stock: <%= v.stock %>
                                         </option>
                                         <% } } %>
                                 </select>
