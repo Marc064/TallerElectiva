@@ -76,6 +76,7 @@ function savePurchase() {
         const data = `productId=${encodeURIComponent(productId)}&supplierId=${encodeURIComponent(supplierId)}&quantity=${encodeURIComponent(quantity)}&price=${encodeURIComponent(price)}`;
 
         xhr.send(data);
+        window.location.reload();
     } else {
         alert('Se deben diligenciar todos los campos');
     }

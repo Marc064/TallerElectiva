@@ -99,7 +99,6 @@ router.post('/products', (req, res) => {
         const existingProduct = Array.from(fileNames[0].values()).find(product => product.id === id)
         existingProduct.name = name
         existingProduct.price = price
-        existingProduct.stock = stock
 
         if (filePaths[0]) {
             update(0, fileNames[0])
@@ -144,7 +143,8 @@ router.post('/sales', (req, res) => {
     if (productId && supplierId && quantity && price) {
         const timestamp = moment().format('YYYYMMDDHHmmssSSS');
         const newSaleId = `${timestamp}_${fileNames[1].size}`;
-
+        const existingProduct = Array.from(fileNames[0].values()).find(product => product.id === productId)
+        existingProduct.stock = (Number(existingProduct.stock)+ Number(quantity)).toString()
         fileNames[1].set(newSaleId, {
             id: newSaleId,
             productId: productId,
@@ -153,7 +153,7 @@ router.post('/sales', (req, res) => {
             price: price,
             timestamp: timestamp
         });
-
+        update(0, fileNames[0])
         update(1, fileNames[1]);
         res.status(200).send('Compra registrada con éxito');
     } else {
