@@ -58,7 +58,7 @@ function savePurchase() {
     const supplierId = document.getElementById('selectProveedor').value
     const quantity = document.getElementById('Cantidad').value
     const price = document.getElementById('Valor').value
-
+    const typeSale = 'purchase'
     if (productId !== "Seleccione un producto" && supplierId !== "Seleccione un proveedor" && quantity !== "" && price !== "") {
 
         const xhr = new XMLHttpRequest();
@@ -73,7 +73,34 @@ function savePurchase() {
         }
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-        const data = `productId=${encodeURIComponent(productId)}&supplierId=${encodeURIComponent(supplierId)}&quantity=${encodeURIComponent(quantity)}&price=${encodeURIComponent(price)}`;
+        const data = `productId=${encodeURIComponent(productId)}&supplierId=${encodeURIComponent(supplierId)}&quantity=${encodeURIComponent(quantity)}&price=${encodeURIComponent(price)}&typeSale=${encodeURIComponent(typeSale)}`;
+
+        xhr.send(data);
+        window.location.reload();
+    } else {
+        alert('Se deben diligenciar todos los campos');
+    }
+}
+
+function saveSale() {
+    const productId = document.getElementById('productoSale').value
+    const quantity = document.getElementById('CantidadSale').value
+    const typeSale = 'sale'
+    if (productId !== "Seleccione un producto" && quantity !== "") {
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/sales", true);
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+               
+                console.log('Venta registrada con éxito');
+               
+                $('#registrarCompraModal').modal('hide');
+            }
+        }
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        const data = `productId=${encodeURIComponent(productId)}&supplierId=${encodeURIComponent("")}&quantity=${encodeURIComponent(quantity)}&price=${encodeURIComponent("")}&typeSale=${encodeURIComponent(typeSale)}`;
 
         xhr.send(data);
         window.location.reload();

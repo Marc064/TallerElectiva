@@ -63,17 +63,26 @@
                     <div class="modal-body">
                         <form>
                             <div class="form-group">
-                                <select name="select" class="form-control" id="selectProducto1">
+                                <label for="productSale">Producto</label>
+                                <select name="select" class="form-select" id="productoSale">
+                                    <option selected>Seleccione un producto</option>
+
+                                    <% for (const [k, v] of product) { if (product.size> 0) { %>
+                                        <option value="<%= v.id %>">
+                                            <%= v.name %>
+                                        </option>
+                                        <% } } %>
                                 </select>
-                                <label for="exampleFormControlInput1">Cantidad</label>
-                                <input type="number" class="form-control" id="exampleFormControlInput1"
-                                    placeholder="Ingrese la acantidad">
+                                </select>
+                                <label for="cantidadSale">Cantidad</label>
+                                <input type="number" class="form-control" id="CantidadSale"
+                                    placeholder="Ingrese la cantidad">
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary">Guardar cambios</button>
+                        <button type="button" class="btn btn-primary" onclick="saveSale()">Vender</button>
                     </div>
                 </div>
             </div>
@@ -98,12 +107,27 @@
                                         <th>Fecha</th>
                                         <th>Producto</th>
                                         <th>Cantidad</th>
-                                        <th>Total</th>
                                         <th>ImprimirFactura</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    <tbody>
+                                        <% if (sale.size > 0) {
+                                            for (const [k, v] of sale) {
+                                                if (v.type === 'sale') { %>
+                                                    <tr>
+                                                        <th><%= v.id %></th>
+                                                        <th><%= v.timestamp %></th>
+                                                        <th><%= getProductById(v.productId).name %></th>
+                                                        <th><%= v.quantity %></th>
+                                                        <th><button type="button" class="btn btn-warning">Imprimir</button></th>
+                                                    </tr>
+                                        <% }}} else {%>
+                                            <tr>
+                                                <td colspan="7">No hay Compras</td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
 
 
                                 </tbody>
@@ -157,7 +181,7 @@
                                 </select>
 
                                 <label for="exampleFormControlInput1">Cantidad</label>
-                                <input type="number" class="form-control" id="Cantidad" placeholder="Ingrese algo">
+                                <input type="number" class="form-control" id="Cantidad" placeholder="Ingrese la cantidad">
                                 <label for="exampleFormControlInput1">Precio</label>
                                 <input type="number" class="form-control" id="Valor" placeholder="Ingrese algo">
 
@@ -199,22 +223,24 @@
                                 </thead>
                                 <tbody>
                                     <% if (sale.size > 0) {
-                                        for (const [k, v] of sale){ %>
-                                            <tr>
-                                                <th><%= v.id %></th>
-                                                <th><%= v.timestamp %></th>
-                                                <th><%= getProductById(v.productId).name %></th>
-                                                <th><%= v.quantity %></th>
-                                                <th><%= v.price %></th>
-                                                <th><%= getSupplierById(v.supplierId).name %></th>
-                                                <th><button type="button" class="btn btn-warning">Imprimir</button></th>
-                                            </tr>
-                                    <% }} else {%>
+                                        for (const [k, v] of sale) {
+                                            if (v.type === 'purchase') { %>
+                                                <tr>
+                                                    <th><%= v.id %></th>
+                                                    <th><%= v.timestamp %></th>
+                                                    <th><%= getProductById(v.productId).name %></th>
+                                                    <th><%= v.quantity %></th>
+                                                    <th><%= v.price %></th>
+                                                    <th><%= getSupplierById(v.supplierId).name %></th>
+                                                    <th><button type="button" class="btn btn-warning">Imprimir</button></th>
+                                                </tr>
+                                    <% }}} else {%>
                                         <tr>
                                             <td colspan="7">No hay Compras</td>
                                         </tr>
                                     <% } %>
                                 </tbody>
+                                
                             </table>
                             
                         </div>

@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const fs = require("fs");
-const moment = require('moment')
+const moment = require('moment');
+const { type } = require("os");
 
 
 router.use(express.json());
@@ -64,17 +65,20 @@ const update = (fileIndex, fileMap) => {
 
 const getProductById = (productId) => {
     return Array.from(fileNames[0].values()).find(product => product.id === productId)
-};
+}
 
 const getSupplierById = (supplierId) => {
     return Array.from(fileNames[2].values()).find(supplier => supplier.id === supplierId)
-};
+}
 
+const getTypeofSale = (typeSale) => {
+    return Array.from(fileNames[1].values()).find(sale => sale.type === typeSale)
+}
 
 
 router.get('/', (req, res) => res.render('index', { title: 'Inicio' }))
 router.get('/products', (req, res) => res.render('products', { title: 'Productos', product: fileNames[0] }))
-router.get('/sales', (req, res) => {res.render('sales', { title: 'Facturacion', sale: fileNames[1], product: fileNames[0], supplier: fileNames[2], getProductById, getSupplierById })})
+router.get('/sales', (req, res) => {res.render('sales', { title: 'Facturacion', sale: fileNames[1], product: fileNames[0], supplier: fileNames[2], getProductById, getSupplierById, getTypeofSale })})
 router.get('/suppliers', (req, res) => res.render('suppliers', { title: 'Proveedores', supplier: fileNames[2] }))
 router.get('/counts', (req, res) => res.render('count', { title: 'Cuentas', count: fileNames[3] }))
 
@@ -139,27 +143,45 @@ router.post('/suppliers', (req, res) => {
     }
 })
 router.post('/sales', (req, res) => {
-    const { productId, supplierId, quantity, price } = req.body;
-    if (productId && supplierId && quantity && price) {
-        const timestamp = moment().format('YYYYMMDDHHmmssSSS');
-        const newSaleId = `${timestamp}_${fileNames[1].size}`;
-        const existingProduct = Array.from(fileNames[0].values()).find(product => product.id === productId)
-        existingProduct.stock = (Number(existingProduct.stock)+ Number(quantity)).toString()
+    const { productId, supplierId, quantity, price, typeSale } = req.body;
+
+    const timestamp = moment().format('YYYYMMDDHHmmssSSS');
+    const newSaleId = `${timestamp}_${fileNames[1].size}`;
+
+    const existingProduct = Array.from(fileNames[0].values()).find(product => product.id === productId);
+
+    if (typeSale === 'purchase' && supplierId !== "" && price !== "") {
+        // Compra
+        existingProduct.stock = (Number(existingProduct.stock) + Number(quantity)).toString();
         fileNames[1].set(newSaleId, {
             id: newSaleId,
             productId: productId,
             supplierId: supplierId,
             quantity: quantity,
             price: price,
+            type: typeSale,
             timestamp: timestamp
         });
-        update(0, fileNames[0])
-        update(1, fileNames[1]);
-        res.status(200).send('Compra registrada con éxito');
+    } else if (typeSale === 'sale') {
+        // Venta
+        existingProduct.stock = (Number(existingProduct.stock) - Number(quantity)).toString();
+        fileNames[1].set(newSaleId, {
+            id: newSaleId,
+            productId: productId,
+            quantity: quantity,
+            type: typeSale,
+            timestamp: timestamp
+        });
     } else {
-        res.status(400).send('Se deben diligenciar todos los campos');
+        // Tipo de venta no reconocido o campos faltantes
+        return res.status(400).send('Error: Tipo de venta no reconocido o campos faltantes');
     }
+
+    update(0, fileNames[0]);
+    update(1, fileNames[1]);
+    res.status(200).send('Operación registrada con éxito');
 });
+
 
 
 
