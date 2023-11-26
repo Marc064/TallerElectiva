@@ -51,7 +51,7 @@ function saveSupplier() {
     }
 }
 
-// En script.js
+
 function loadOptions(endpoint, selectId, defaultOption) {
     const select = document.getElementById(selectId);
     select.innerHTML = `<option value="value1">${defaultOption}</option>`;
@@ -78,10 +78,36 @@ function loadOptions(endpoint, selectId, defaultOption) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Carga los productos y proveedores
     loadOptions('/products', 'selectProduto', 'Seleccione un Producto');
     loadOptions('/products', 'selectProducto1', 'Seleccione un Producto');
     loadOptions('/suppliers', 'selectProveedor', 'Seleccione un Proveedor');
 });
 
-// ... Resto de tu código
+
+function savePurchase() {
+    const productId = document.getElementById('selectProduto').value;
+    const supplierId = document.getElementById('selectProveedor').value;
+    const quantity = document.getElementById('Cantidad').value;
+    const price = document.getElementById('Valor').value;
+
+    if (productId !== "" && supplierId !== "" && quantity !== "" && price !== "") {
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/sales", true);
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+               
+                console.log('Compra registrada con éxito');
+               
+                $('#registrarCompraModal').modal('hide');
+            }
+        }
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        const data = `productId=${encodeURIComponent(productId)}&supplierId=${encodeURIComponent(supplierId)}&quantity=${encodeURIComponent(quantity)}&price=${encodeURIComponent(price)}`;
+
+        xhr.send(data);
+    } else {
+        alert('Se deben diligenciar todos los campos');
+    }
+}

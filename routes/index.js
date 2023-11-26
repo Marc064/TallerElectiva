@@ -131,6 +131,27 @@ router.post('/suppliers', (req, res) => {
         }
     }
 })
+router.post('/sales', (req, res) => {
+    const { productId, supplierId, quantity, price } = req.body;
+    if (productId && supplierId && quantity && price) {
+        const timestamp = moment().format('YYYYMMDDHHmmssSSS');
+        const newSaleId = `${timestamp}_${fileNames[1].size}`;
+
+        fileNames[1].set(newSaleId, {
+            id: newSaleId,
+            productId: productId,
+            supplierId: supplierId,
+            quantity: quantity,
+            price: price,
+            timestamp: timestamp
+        });
+
+        update(1, fileNames[1]);
+        res.status(200).send('Compra registrada con éxito');
+    } else {
+        res.status(400).send('Se deben diligenciar todos los campos');
+    }
+});
 
 
 
